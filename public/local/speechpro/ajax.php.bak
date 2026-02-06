@@ -1,0 +1,102 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+
+define('AJAX_SCRIPT', true);
+define('NO_DEBUG_DISPLAY', false); // Show errors for debugging
+require_once(__DIR__ . '/../../config.php');
+
+// Enable error logging
+ini_set('display_errors', '1');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+
+require_login();
+require_sesskey();
+require_capability('local/speechpro:use', context_system::instance());
+
+use local_speechpro\service;
+
+header('Content-Type: application/json; charset=utf-8');
+
+$action = required_param('action', PARAM_ALPHA);
+
+function read_json_body(): array
+{
+    $raw = file_get_contents('php://input');
+    if (!$raw) {
+        return [];
+    }
+    $data = json_decode($raw, true);
+    return is_array($data) ? $data : [];
+}
+
+try {
+    switch ($action) {
+        case 'config':
+            echo json_encode([
+                'endpoint' => service::get_endpoint(),
+                'timeout' => service::get_timeout(),
+            ]);
+            break;
+
+        case 'gtp':
+            $data = read_json_body();
+            $text = trim($data['text'] ?? required_param('text', PARAM_RAW));
+            $result = service::gtp($text);
+            echo json_encode($result);
+            break;
+
+        case 'model':
+            $data = read_json_body();
+            $text = trim($data['text'] ?? required_param('text', PARAM_RAW));
+            $syll_ltrs = trim($data['syll_ltrs'] ?? required_param('syll_ltrs', PARAM_RAW));
+            $syll_phns = trim($data['syll_phns'] ?? required_param('syll_phns', PARAM_RAW));
+            $result = service::model($text, $syll_ltrs, $syll_phns);
+            echo json_encode($result);
+            break;
+
+        case 'score':
+            $text = required_param('text', PARAM_RAW);
+            $syll_ltrs = required_param('syll_ltrs', PARAM_RAW);
+            $syll_phns = required_param('syll_phns', PARAM_RAW);
+            $fst = required_param('fst', PARAM_RAW);
+            if (empty($_FILES['audio']) || !is_uploaded_file($_FILES['audio']['tmp_name'])) {
+                throw new moodle_exception('audio file is required');
+            }
+            $audio = file_get_contents($_FILES['audio']['tmp_name']);
+            $result = service::score($text, $syll_ltrs, $syll_phns, $fst, $audio);
+            echo json_encode($result);
+            break;
+
+        case 'evaluate':
+            $text = required_param('text', PARAM_RAW);
+            if (empty($_FILES['audio']) || !is_uploaded_file($_FILES['audio']['tmp_name'])) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'audio file is required']);
+                exit;
+            }
+            $audio = file_get_contents($_FILES['audio']['tmp_name']);
+            $result = service::evaluate($text, $audio);
+
+            // service::evaluate already returns an array with success/error
+            if (isset($result['success'])) {
+                echo json_encode($result);
+            } else {
+                // Wrap result if it's raw data
+                echo json_encode(['success' => true, 'data' => $result]);
+            }
+            break;
+
+        default:
+            throw new moodle_exception('invalid action');
+    }
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage(),
+        'trace' => $e->getTraceAsString()
+    ]);
+}

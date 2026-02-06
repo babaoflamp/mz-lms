@@ -1,0 +1,20 @@
+[Unit]
+Description=ngrok HTTP Tunnel for Moodle
+After=network.target
+Documentation=https://ngrok.com/docs
+
+[Service]
+Type=simple
+User=scottk
+WorkingDirectory=/home/scottk/Projects/moodle
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/local/bin/ngrok http 8888 --domain=mz-lms.ngrok.app --log=stdout
+ExecStop=/bin/pkill -f "ngrok http"
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ngrok-moodle
+
+[Install]
+WantedBy=multi-user.target

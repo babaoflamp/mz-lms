@@ -1,0 +1,51 @@
+/*=======================================
+ * Settings: Global theme colors (Navy).
+ ======================================*/
+
+/* Bootstrap core color overrides (navy palette). */
+$primary: #1e3a8a;
+$secondary: #334155;
+$success: #2563eb;
+$info: #60a5fa;
+$warning: #f59e0b;
+$danger: #ef4444;
+$light: #f8fafc;
+$dark: #0f172a;
+
+/* Global body and link colors. */
+$body-bg: #f8fafc;
+$body-color: #0f172a;
+$link-color: #1d4ed8;
+$link-hover-color: #1e40af;
+
+/* Navbar colors. */
+$navbar-dark-color: #e2e8f0;
+$navbar-dark-hover-color: #ffffff;
+$navbar-dark-active-color: #ffffff;
+$navbar-dark-brand-color: #ffffff;
+$navbar-light-color: #1e293b;
+$navbar-light-hover-color: #0f172a;
+$navbar-light-brand-color: #0f172a;
+
+/*=======================================
+ * Settings: Smart menus.
+ ======================================*/
+
+/*---------------------------------------
+ * Menu bar.
+ --------------------------------------*/
+
+/* Height of the smart menu menubar.
+   It is used to define the height of the menubar and to move the position of all fixed elements
+   which are on the page further down. */
+$bu-smartmenu-menubar-height: 40px;
+
+
+/*---------------------------------------
+ * Bottom bar.
+ --------------------------------------*/
+
+/* Height of the smart menu bottombar.
+   It is used to define the height of the bottombar and to move the position of all fixed elements
+   which are on the page further up. */
+$bu-smartmenu-bottombar-height: 60px;
