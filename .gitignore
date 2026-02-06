@@ -1,0 +1,14 @@
+# Moodle data files
+moodledata/
+.vscode/
+*.backup.*
+node_modules/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/settings.json
