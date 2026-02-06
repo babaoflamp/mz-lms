@@ -15,8 +15,8 @@ HanTok은 AI 기반 초개인화 한국어 학습 플랫폼으로, 발음·문�
 
 ## 기술 스택
 
-- **LMS 플랫폼**: Moodle 4.4 (Docker 기반)
-- **데이터베이스**: MySQL (utf8mb4)
+- **LMS 플랫폼**: Moodle 5.1.1+ (Build: 20260126) (Docker 기반)
+- **데이터베이스**: MySQL 8.0+ (utf8mb4)
 - **외부 API**: SpeechPro (발음 평가), 음성 합성 API
 - **테마**: Academi (Moodle Bootstrap 기반)
 - **외부 접근**: ngrok HTTPS 터널 (mz-lms.ngrok.app)
